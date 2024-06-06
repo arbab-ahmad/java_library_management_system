@@ -1,0 +1,198 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    private String title;
+    private String author;
+    private String isbn;
+    private int quantity;
+
+    public Book(String title, String author, String isbn, int quantity) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.quantity = quantity;
+    }
+
+    // Getters and Setters
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "Title='" + title + '\'' +
+                ", Author='" + author + '\'' +
+                ", ISBN='" + isbn + '\'' +
+                ", Quantity=" + quantity +
+                '}';
+    }
+}
+
+class Library {
+    private ArrayList<Book> books;
+
+    public Library() {
+        this.books = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public Book searchBook(String query) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(query) || book.getAuthor().equalsIgnoreCase(query) || book.getIsbn().equalsIgnoreCase(query)) {
+                return book;
+            }
+        }
+        return null;
+    }
+
+    public boolean updateBook(String query, String title, String author, String isbn, int quantity) {
+        Book book = searchBook(query);
+        if (book != null) {
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setIsbn(isbn);
+            book.setQuantity(quantity);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteBook(String query) {
+        Book book = searchBook(query);
+        if (book != null) {
+            books.remove(book);
+            return true;
+        }
+        return false;
+    }
+
+    public void displayBooks() {
+        for (Book book : books) {
+            System.out.println(book);
+        }
+    }
+}
+
+public class LibraryManagementSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
+
+        while (true) {
+            System.out.println("\nLibrary Management System");
+            System.out.println("1. Add Book");
+            System.out.println("2. Search Book");
+            System.out.println("3. Update Book");
+            System.out.println("4. Delete Book");
+            System.out.println("5. Display All Books");
+            System.out.println("6. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter title: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter author: ");
+                    String author = scanner.nextLine();
+                    System.out.print("Enter ISBN: ");
+                    String isbn = scanner.nextLine();
+                    System.out.print("Enter quantity: ");
+                    int quantity = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+
+                    library.addBook(new Book(title, author, isbn, quantity));
+                    break;
+
+                case 2:
+                    System.out.print("Enter title, author, or ISBN to search: ");
+                    String query = scanner.nextLine();
+                    Book book = library.searchBook(query);
+                    if (book != null) {
+                        System.out.println(book);
+                    } else {
+                        System.out.println("Book not found.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Enter title, author, or ISBN to update: ");
+                    query = scanner.nextLine();
+                    System.out.print("Enter new title: ");
+                    title = scanner.nextLine();
+                    System.out.print("Enter new author: ");
+                    author = scanner.nextLine();
+                    System.out.print("Enter new ISBN: ");
+                    isbn = scanner.nextLine();
+                    System.out.print("Enter new quantity: ");
+                    quantity = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+
+                    if (library.updateBook(query, title, author, isbn, quantity)) {
+                        System.out.println("Book updated successfully.");
+                    } else {
+                        System.out.println("Book not found.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Enter title, author, or ISBN to delete: ");
+                    query = scanner.nextLine();
+                    if (library.deleteBook(query)) {
+                        System.out.println("Book deleted successfully.");
+                    } else {
+                        System.out.println("Book not found.");
+                    }
+                    break;
+
+                case 5:
+                    library.displayBooks();
+                    break;
+
+                case 6:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
